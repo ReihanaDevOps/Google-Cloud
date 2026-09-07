@@ -46,3 +46,9 @@ Shop Controller
   │
   ▼
 Temporary Shop Data
+
+
+{
+  "name": "Bloom Kandy",
+  "city": "Kandy"
+}
