@@ -69,6 +69,52 @@ node_modules/
 .env
 ```
 
+Excellent! 🎉 Your **Shop Service Docker image has been built successfully**.
+
+Now we need to run it as a container.
+
+## Step 3 — Run the Shop Service container
+
+Because your `.env` is excluded from the image, pass it when starting the container:
+
+```powershell
+docker run --name bloomworld-shop-service `
+  --env-file .env `
+  -p 3000:3000 `
+  -d bloomworld-shop-service
+```
+
+### Architecture right now
+
+```text
+Windows Host
+│
+├── PostgreSQL Container
+│     └── Port 5433
+│
+└── Shop Service Container
+      └── Port 3000
+```
+
+⚠️ **Important:** This may fail to connect to PostgreSQL because inside the Shop Service container:
+
+```text
+127.0.0.1
+```
+
+means the **Shop Service container itself**, not your Windows machine or PostgreSQL container.
+
+So let's first run it and see the result.
+
+After running the command, check the logs:
+
+```powershell
+docker logs bloomworld-shop-service
+```
+
+Send me the output.
+
+
 into the Docker image.
 
 Commands
