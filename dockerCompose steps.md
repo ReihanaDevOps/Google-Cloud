@@ -161,3 +161,81 @@ docker compose up -d
 ```
 
 Let's do that next.
+
+
+Great 👍 Now let's add the Docker Compose configuration.
+
+## Step 3 — Add code to `docker-compose.yml`
+
+Open:
+
+```text
+bloomworld/docker-compose.yml
+```
+
+Add:
+
+```yaml
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: bloomworld-postgres
+    environment:
+      POSTGRES_USER: bloomworld
+      POSTGRES_PASSWORD: bloomworld123
+      POSTGRES_DB: bloomworld
+    ports:
+      - "5433:5432"
+
+  shop-service:
+    build:
+      context: ./shop-service
+    container_name: bloomworld-shop-service
+    env_file:
+      - ./shop-service/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+```
+
+## Important: Update your `.env`
+
+Because Docker Compose automatically creates a network and gives services DNS names, your `.env` should contain:
+
+```env
+DB_USER=bloomworld
+DB_HOST=postgres
+DB_NAME=bloomworld
+DB_PASSWORD=bloomworld123
+DB_PORT=5432
+
+PORT=3000
+```
+
+Notice:
+
+```text
+DB_HOST=postgres
+```
+
+`postgres` is the **service name** in:
+
+```yaml
+services:
+  postgres:
+```
+
+So Docker Compose creates this communication:
+
+```text
+shop-service
+     │
+     │ postgres:5432
+     ▼
+postgres
+```
+
+Save both files. Then tell me **done**, and we'll run your entire application with one Docker Compose command.
+
