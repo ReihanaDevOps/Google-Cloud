@@ -52,3 +52,6 @@ Temporary Shop Data
   "name": "Bloom Kandy",
   "city": "Kandy"
 }
+
+
+<img width="835" height="577" alt="image" src="https://github.com/user-attachments/assets/bb8a3c1c-c7ec-457e-81c1-c9abb8e470a9" />
