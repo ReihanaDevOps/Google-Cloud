@@ -27,3 +27,73 @@ PS C:\Users\Reihana\Documents\Reihana\Bloom\bloomworld\shop-service> docker logs
 Shop Service running on port 3000
 Database connected: { now: 2026-09-07T06:51:34.647Z }
 PS C:\Users\Reihana\Documents\Reihana\Bloom\bloomworld\shop-service> 
+
+
+
+Best solution: Put both containers on the same Docker network
+
+Later, Docker Compose will manage this automatically, but let's understand it manually first.
+
+Step 1 — Create a Docker network
+
+Run:
+
+docker network create bloomworld-network
+Step 2 — Connect PostgreSQL to the network
+
+Your existing PostgreSQL container can be connected to it:
+
+docker network connect bloomworld-network bloomworld-postgres
+Step 3 — Stop and remove the failed shop-service container
+docker stop bloomworld-shop-service
+docker rm bloomworld-shop-service
+Step 4 — Update your .env
+
+Change:
+
+DB_HOST=127.0.0.1
+DB_PORT=5433
+
+to:
+
+DB_HOST=bloomworld-postgres
+DB_PORT=5432
+
+Why?
+
+Docker containers on the same network can communicate using the container name:
+
+Shop Service Container
+       │
+       │ bloomworld-postgres:5432
+       ▼
+PostgreSQL Container
+Step 5 — Run the shop service on the same network
+docker run --name bloomworld-shop-service `
+  --network bloomworld-network `
+  --env-file .env `
+  -p 3000:3000 `
+  -d bloomworld-shop-service
+Step 6 — Check logs
+docker logs bloomworld-shop-service
+
+You should now see:
+
+Shop Service running on port 3000
+Database connected
+Important: Your local development configuration changes
+
+After changing .env to:
+
+DB_HOST=bloomworld-postgres
+DB_PORT=5432
+
+your Node.js app running directly on Windows will no longer connect, because bloomworld-postgres is a Docker network hostname.
+
+So for now, we are testing the fully containerized application.
+
+Later, when we create docker-compose.yml, we'll handle local configuration much more cleanly.
+
+Run these steps one by one. The key concept you're learning here is:
+
+Inside Docker, containers communicate through a Docker network using container/service names and internal container ports.
