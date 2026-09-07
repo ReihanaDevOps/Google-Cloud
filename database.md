@@ -547,3 +547,10 @@ shops
 
 Run the Docker command first and tell me what output you get.
 
+Step 1: Install the PostgreSQL Node.js library
+
+Inside your shop-service terminal, run:
+
+npm install pg
+
+pg is the PostgreSQL driver for Node.js.
