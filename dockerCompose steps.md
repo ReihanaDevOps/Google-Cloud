@@ -120,3 +120,44 @@ into the Docker image.
 Commands
 docker build -t bloomworld-shop-service .
 docker images
+
+
+Great 👍 Now you understand the important networking concept.
+
+Your current setup is working like this:
+
+```text
+Browser
+   │
+   │ localhost:3000
+   ▼
+Windows Host Port 3000
+   │
+   │ Docker port mapping
+   ▼
+Shop Service Container
+   │
+   │ DB_HOST=bloomworld-postgres
+   │ DB_PORT=5432
+   ▼
+Docker Network DNS
+   │
+   ▼
+PostgreSQL Container
+```
+
+## Next step: Docker Compose
+
+Right now you manually created and managed:
+
+* Docker network
+* PostgreSQL container
+* Shop Service container
+
+Docker Compose can define all of that in one file and start everything with:
+
+```powershell
+docker compose up -d
+```
+
+Let's do that next.
