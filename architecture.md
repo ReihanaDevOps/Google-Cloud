@@ -19,3 +19,13 @@
 
 <img width="336" height="160" alt="image" src="https://github.com/user-attachments/assets/5056c65c-bd59-4ba1-a954-47a81ca17187" />
 
+React SPA
+    │
+    │ HTTP Request
+    ▼
+Shop Service (Node.js + Express)
+    │
+    ├── Shops
+    ├── Flowers
+    ├── Custom Bouquets
+    └── Orders
