@@ -29,3 +29,20 @@ Shop Service (Node.js + Express)
     ├── Flowers
     ├── Custom Bouquets
     └── Orders
+
+
+
+Client
+  │
+  │ GET /api/shops
+  ▼
+Express App
+  │
+  ▼
+Shop Routes
+  │
+  ▼
+Shop Controller
+  │
+  ▼
+Temporary Shop Data
