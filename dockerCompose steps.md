@@ -239,3 +239,149 @@ postgres
 
 Save both files. Then tell me **done**, and we'll run your entire application with one Docker Compose command.
 
+This is a **common Docker Compose startup timing issue**. Your configuration and network are working. 👍
+
+Look at the order:
+
+```text
+Shop Service started
+↓
+Tried to connect to PostgreSQL ❌
+↓
+PostgreSQL was still initializing
+↓
+PostgreSQL became ready ✅
+```
+
+Your logs show:
+
+```text
+Database connection failed: ECONNREFUSED
+```
+
+and shortly after:
+
+```text
+database system is ready to accept connections
+```
+
+So the problem is **not networking**. The database simply wasn't ready yet.
+
+## Why `depends_on` didn't solve it
+
+You have:
+
+```yaml
+depends_on:
+  - postgres
+```
+
+This means:
+
+> Start the PostgreSQL container before starting the Shop Service container.
+
+But it does **not necessarily mean PostgreSQL is ready to accept connections** before your app starts.
+
+---
+
+# Fix: Add a PostgreSQL health check
+
+Update your `docker-compose.yml`.
+
+Change the `postgres` service to:
+
+```yaml
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: bloomworld-postgres
+
+    environment:
+      POSTGRES_USER: bloomworld
+      POSTGRES_PASSWORD: bloomworld123
+      POSTGRES_DB: bloomworld
+
+    ports:
+      - "5433:5432"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bloomworld -d bloomworld"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  shop-service:
+    build:
+      context: ./shop-service
+
+    container_name: bloomworld-shop-service
+
+    env_file:
+      - ./shop-service/.env
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+```
+
+Now the startup flow becomes:
+
+```text
+PostgreSQL Container
+        │
+        ▼
+Initializing...
+        │
+        ▼
+Health Check
+        │
+        ▼
+PostgreSQL Healthy ✅
+        │
+        ▼
+Start Shop Service
+        │
+        ▼
+Database Connected ✅
+```
+
+---
+
+## Next step
+
+Stop the current Compose setup by pressing:
+
+```text
+Ctrl + C
+```
+
+Then run:
+
+```powershell
+docker compose down
+```
+
+Then start again:
+
+```powershell
+docker compose up --build
+```
+
+You should then see:
+
+```text
+PostgreSQL is ready
+```
+
+followed by:
+
+```text
+Shop Service running on port 3000
+Database connected
+```
+
+This is actually a good DevOps concept for your assignment: **container startup order is not the same as application readiness**, so health checks are important.
