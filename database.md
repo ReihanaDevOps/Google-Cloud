@@ -454,3 +454,96 @@ And you can explain in your documentation:
 That explanation shows **actual DevOps architecture decision-making**, which is likely more valuable than simply deploying everything inside Kubernetes.
 
 So yes—you *can* use a Kubernetes database solution. **Cloud SQL isn't mandatory; it's an architectural choice.**
+
+
+
+Perfect. We have completed the first backend functionality. 🎉
+
+Currently your `shop-service` has:
+
+```text
+GET   /api/shops      → Get all shops
+POST  /api/shops      → Create a shop
+```
+
+And currently the data is temporary:
+
+```text
+Controller
+    ↓
+JavaScript array
+```
+
+## What we should do next
+
+Before building more features, we should connect the application to **PostgreSQL**, because otherwise all new shops disappear when the server restarts.
+
+Our development path should be:
+
+```text
+1. Shop APIs                  ✅ GET + POST
+2. PostgreSQL Docker          ← NEXT
+3. Connect Node.js to DB
+4. Create shops table
+5. Update GET API to use DB
+6. Update POST API to use DB
+7. Add Flower/Product APIs
+8. Add Custom Bouquet logic
+9. Add Order APIs
+```
+
+---
+
+# Next: Start PostgreSQL with Docker
+
+First, make sure Docker Desktop is running.
+
+Then open a terminal and run:
+
+```powershell
+docker ps
+```
+
+If Docker is working, you'll see a container list (it can be empty).
+
+Then run PostgreSQL:
+
+```powershell
+docker run --name bloomworld-postgres -e POSTGRES_USER=bloomworld -e POSTGRES_PASSWORD=bloomworld123 -e POSTGRES_DB=bloomworld -p 5432:5432 -d postgres:16
+```
+
+Then check:
+
+```powershell
+docker ps
+```
+
+You should see:
+
+```text
+bloomworld-postgres
+postgres:16
+Up ...
+```
+
+Once PostgreSQL is running, we'll connect:
+
+```text
+Shop Service (Node.js)
+        │
+        ▼
+PostgreSQL Docker
+```
+
+Then we'll create our first real table:
+
+```text
+shops
+├── id
+├── name
+├── city
+└── created_at
+```
+
+Run the Docker command first and tell me what output you get.
+
