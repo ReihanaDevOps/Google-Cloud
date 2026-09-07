@@ -70,3 +70,7 @@ node_modules/
 ```
 
 into the Docker image.
+
+Commands
+docker build -t bloomworld-shop-service .
+docker images
