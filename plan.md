@@ -649,3 +649,12 @@ We should **keep the application simple**:
 Then put most of our effort into the **DevOps architecture**, because that is what this assignment is actually evaluating.
 
 So yes, our **one `shop-service` backend is correct**. We don't need multiple microservices.
+
+
+1. Add .env configuration       ← NEXT
+2. Add input validation
+3. Add Dockerfile
+4. Dockerize shop-service
+5. Use Docker Compose locally
+6. Prepare Kubernetes manifests
+7. Deploy to GKE
